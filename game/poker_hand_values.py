@@ -120,33 +120,42 @@ class HandValue(object):
 		return(sorted(self.figures, reverse = True)[0:5])
 
 
-	def best_hand(self):
+	def best_hand(self, verbose = False):
 		if self.flush()[0] == True:
-			print("You have a flush with high %d" %self.flush()[1])
-			return(8, self.flush()[1])
+			if verbose == True:
+				print("You have a flush with high %d" %self.flush()[1])
+			return(8, [self.flush()[1]])
 		elif self.square()[0] == True:
-			print("You have a square of %d" %self.square()[1][0])
+			if verbose == True:
+				print("You have a square of %d" %self.square()[1][0])
 			return(7, self.square()[1])
 		elif self.full()[0] == True:
-			print("You have a full of %d by the %d" %(self.full()[1][0], self.full()[1][1]))
+			if verbose == True:
+				print("You have a full of %d by the %d" %(self.full()[1][0], self.full()[1][1]))
 			return(6, self.full()[1])
 		elif self.color()[0] == True:
-			print("You have a color with high %d" %self.color()[1][0])
+			if verbose == True:
+				print("You have a color with high %d" %self.color()[1][0])
 			return(5, self.color()[1][0:5])
 		elif self.straight()[0] == True:
-			print("You have a straight with high %d" %self.straight()[1])
-			return(4, self.straight()[1])
+			if verbose == True:
+				print("You have a straight with high %d" %self.straight()[1])
+			return(4, [self.straight()[1]])
 		elif self.set_()[0] ==True:
-			print("You have a set of %d" %self.set_()[1][0])
+			if verbose == True:
+				print("You have a set of %d" %self.set_()[1][0])
 			return(3, self.set_()[1])
 		elif self.double_pair()[0] == True:
-			print("You have a double pair of %d and %d" %(self.double_pair()[1][0], self.double_pair()[1][1]))
+			if verbose == True:
+			 print("You have a double pair of %d and %d" %(self.double_pair()[1][0], self.double_pair()[1][1]))
 			return(2, self.double_pair()[1])
 		elif self.pair()[0] == True:
-			print("You have a pair of %d" %self.pair()[1][0])
+			if verbose == True:
+				print("You have a pair of %d" %self.pair()[1][0])
 			return(1, self.pair()[1])
 		else:
-			print("You have an high %d" %self.highest_cards()[0])
+			if verbose == True:
+				print("You have an high %d" %self.highest_cards()[0])
 			return(0, self.highest_cards())
 
 
