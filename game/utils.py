@@ -62,7 +62,9 @@ def hand_winner(table, board_cards, cards_dealed):
 					winner_hand = [value.best_hand()[0], value.best_hand()[1]]
 	winner_value = HandValue(player_game(winner, board_cards, cards_dealed))
 	winner_tie.append(winner)
-	print("The player(s) %a win the hand with %s" %(winner_tie, winner_value.best_hand(verbose = True)))
+	winner_names = [table.spot_name[x] for x in winner_tie]
+	print("The player(s) %a win the hand" %winner_names)
+	winner_value.best_hand(verbose = True)
 	return(winner_tie)
 
 

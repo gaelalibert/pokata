@@ -5,7 +5,7 @@ from poker_hand_values import HandValue
 from utils import *
 
 # We create the table
-cg_table = Table(0, limit = 1)
+cg_table = Table(limit = 1)
 
 #We create our players and add them to the table
 robert = Players('Robert')
@@ -25,8 +25,8 @@ for i in cg_table.players:
 # The dealer is chosen randomly (for this iteration)
 cg_table.dealer = rd.choice(list(cg_table.spots_taken))
 print("The seat %i is the Dealer" %cg_table.dealer)
-dealer = 
-print("The player %s is the Dealer" %)
+dealer = cg_table.spot_name[cg_table.dealer]
+print("The player %s is the Dealer" %dealer)
 
 # We create the full deck
 deck = deck_creation()
