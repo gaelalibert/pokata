@@ -47,7 +47,7 @@ def hand_winner(table, board_cards, cards_dealed):
 	for player in table.spots_taken:
 		a = player_game(player, board_cards, cards_dealed)
 		value = HandValue(a)
-		print(value.best_hand()[1])
+		print(table.spot_name[player] + ' : ' + str(value.best_hand()))
 		if value.best_hand()[0] > winner_hand[0]:
 			winner = player
 			winner_tie = []
