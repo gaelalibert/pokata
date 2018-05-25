@@ -33,8 +33,12 @@ print(seats_list_to_names_list(ordered_players, cg_table))
 # We create the full deck
 deck = deck_creation()
 
-# We deal 2 cards per players RANDOMLY
-deck, cards_dealed = dealing(cg_table, deck)
+# We chose the 2 cards for all players
+chosen_cards = [{'pseudo': 'Robert', 'card1': (14,3), 'card2': (14,2)},
+				{'pseudo': 'Youri', 'card1': (13,3), 'card2': (13,2)},
+				{'pseudo': 'Zinedine', 'card1': (12,3), 'card2': (12,2)}]
+
+deck, cards_dealed = chosen_dealing(cg_table, deck, chosen_cards)
 
 for i in show_cards_dealed(cg_table, cards_dealed):
 	print(i)

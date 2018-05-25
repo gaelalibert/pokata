@@ -1,4 +1,4 @@
-from poker_player import Players 
+from .poker_player import Players 
 import random as rd
 
 class Table(object):
@@ -14,8 +14,10 @@ class Table(object):
 
 		#Spots where the players are sitting over the 10 available spots	
 		self.spots_taken = set()
+		self.spots_taken_list = []
 		self.free_spots = set(range(10)) - self.spots_taken
 		self.players = []
+		self.spot_player = {}
 		self.spot_name = {}
 		self.dealer = -1
 		print("Taken spots : ", self.spots_taken)
@@ -31,6 +33,7 @@ class Table(object):
 			## Assign a spot to the new player
 			spot = rd.sample(self.free_spots, 1)[0]
 			player.seat = spot
+			self.spot_player[spot] = player
 			self.spot_name[spot] = player.pseudo
 
 			self.players.append(player)
@@ -42,12 +45,20 @@ class Table(object):
 				raise ValueError("You can only sit we an amount of chips between 20 and 100 BB")
 			## Update the taken and free spots
 			self.spots_taken.add(spot)
+			self.spots_taken_list.append(spot)
 			self.free_spots.remove(spot)
 			print("You can sit here. There are now %d players on this table." %self.nb_players)
 		else: 
 			print("This table is full, please come later")
 		print("Taken spots : ", self.spots_taken)
 		print("Free spots : ", self.free_spots)
+
+	def show(self):
+		print("Taken spots : ", self.spots_taken)
+		print("Free spots : ", self.free_spots)
+		print("Players : ", [x.pseudo for x in self.players])
+		print("Spots names : ", self.spot_name)
+		print("Dealer is the seat : ", self.dealer)
 
 
 	def leave(self, spot):

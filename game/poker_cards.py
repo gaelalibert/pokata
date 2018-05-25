@@ -7,15 +7,20 @@ class Cards(object):
 	def __init__(self, figure, color):
 		if figure > 1 and figure < 15:
 			self.figure = figure
+		elif figure == -1:
+			self.figure = figure
 		else:
 			raise ValueError("Your card number should be between 2 and 14")
 		if color > 0 and color < 5:
+			self.color = color
+		elif color == -1:
 			self.color = color
 		else: 
 			raise ValueError("Your card color should be between 1 and 4")
 
 	def show(self):
 		switcher_figure = {
+			-1: "Test",
 			14: "Ace",
 			2: "2",
 			3: "3",
@@ -31,6 +36,7 @@ class Cards(object):
 			13: "King"
 		}
 		switcher_color = {
+			-1: "Test_color",
 			1: "Heart",
 			2: "Diamond",
 			3: "Clubs",

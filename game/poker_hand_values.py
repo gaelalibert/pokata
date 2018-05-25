@@ -1,4 +1,4 @@
-from poker_cards import Cards
+from .poker_cards import Cards
 from collections import Counter
 
 class HandValue(object):

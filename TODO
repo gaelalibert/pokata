@@ -1,1 +1,5 @@
-- Improve display of hand result.
+- Improve display of hand result. OK
+- implement flop, turn and river OK
+- implement bets
+- implement a method (monte carlo or with combination calculus) to compute win ratio on a given situation
+- construct simple betting behaviours
