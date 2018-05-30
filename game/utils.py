@@ -15,16 +15,16 @@ def show_deck(deck : list):
 		card = Cards(item[0], item[1])
 		print(card.show())
 
-def dealing(table : Table, deck : list):
+def dealing(players_left : list, deck : list):
 	cards_dealed = []
-	for idx, player in enumerate(table.spots_taken_list):
+	for player in players_left:
 		card_idx = rd.sample(deck, 2)
 		deck = set(deck) - set(card_idx)
 		card1 = Cards(card_idx[0][0], card_idx[0][1])
 		cards_dealed.append([player, card1])
 		card2 = Cards(card_idx[1][0], card_idx[1][1])
 		cards_dealed.append([player, card2])
-		table.players[idx].hand = (card1, card2)
+		player.hand = (card1, card2)
 	return(deck, cards_dealed)
 
 def chosen_dealing(table : Table, deck : list, chosen_cards : list):
@@ -45,11 +45,11 @@ def chosen_dealing(table : Table, deck : list, chosen_cards : list):
 	return(deck, cards_dealed)
 
 
-def show_cards_dealed(table : Table, cards_dealed : list):
+def show_cards_dealed(players_left : list, cards_dealed : list):
 	output = []
-	for i in table.spots_taken:
+	for i in players_left:
 		player_cards = [x[1] for x in cards_dealed if x[0] == i]
-		player_output = {'player': table.spot_name[i], 'card1': player_cards[0].show(), 'card2': player_cards[1].show()}
+		player_output = {'player': i.pseudo, 'card1': player_cards[0].show(), 'card2': player_cards[1].show()}
 		output.append(player_output)
 	return(output)
 
@@ -80,15 +80,15 @@ def player_game(spot, board_cards, cards_dealed):
 		player_cards.append(Cards(cards[0], cards[1]))
 	return(player_cards)
 
-
-def hand_winner(table, board_cards, cards_dealed, verbose = True):
+## TO DO : change the table relation to a Round relation
+def hand_winner(players_left, board_cards, cards_dealed, verbose = True):
 	winner = -1
 	winner_tie = []
 	winner_hand = [0,[0, 0, 0, 0, 0]]
-	for player in table.spots_taken:
+	for player in players_left:
 		a = player_game(player, board_cards, cards_dealed)
 		value = HandValue(a)
-		print(table.spot_name[player] + ' : ' + str(value.best_hand()))
+		print(player.pseudo + ' : ' + str(value.best_hand()))
 		if verbose == True:
 			value.best_hand(verbose = True)
 		if value.best_hand()[0] > winner_hand[0]:
@@ -105,7 +105,7 @@ def hand_winner(table, board_cards, cards_dealed, verbose = True):
 					winner_hand = [value.best_hand()[0], value.best_hand()[1]]
 	winner_value = HandValue(player_game(winner, board_cards, cards_dealed))
 	winner_tie.append(winner)
-	winner_names = [table.spot_name[x] for x in winner_tie]
+	winner_names = [x.pseudo for x in winner_tie]
 	print("The player(s) %a win(s) the hand" %winner_names)
 	winner_value.best_hand(verbose = True)
 	return(winner_tie)

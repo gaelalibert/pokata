@@ -8,7 +8,7 @@ class Round():
 		self.step = "pre-flop"
 		self.table = table
 		self.deck = deck_creation()
-		self.board_cards = None
+		self.board_cards = []
 		self.cards_dealed = None
 		self.pot = 0
 		self.ordered_players = ordered_players(table)
@@ -29,11 +29,12 @@ class Round():
 
 	def dealing_cards(self):
 		# We deal 2 cards per players RANDOMLY
-		self.deck, self.cards_dealed = dealing(self.table, self.deck)
+		self.deck, self.cards_dealed = dealing(self.players_left, self.deck)
 
 	def preflop_bets(self, type='manual'):
-		self.betting(type='manual')
+		self.betting(type)
 		self.show_info()
+		self.get_next_step()
 
 	def play_flop(self):
 		self.deck, flop_cards = dealing_flop(self.deck)
@@ -42,12 +43,22 @@ class Round():
 		show_deck(flop_cards)
 		self.board_cards = flop_cards
 
+	def flop_bets(self, type='manual'):
+		self.betting(type)
+		self.show_info()
+		self.get_next_step()
+
 	def play_turn(self):
 		self.deck, turn_card = dealing_turn(self.deck)
 		self.step = "turn"
 		print("The turn card is the following : ")
 		show_deck(turn_card)
 		self.board_cards += turn_card
+
+	def turn_bets(self, type='manual'):
+		self.betting(type)
+		self.show_info()
+		self.get_next_step()
 
 	def play_river(self):
 		self.deck, river_card = dealing_turn(self.deck)
@@ -56,8 +67,13 @@ class Round():
 		show_deck(river_card)
 		self.board_cards += river_card
 
+	def river_bets(self, type='manual'):
+		self.betting(type)
+		self.show_info()
+		self.get_next_step()
+
 	def get_round_winner(self):
-		hand_winner(self.table, self.board_cards, self.cards_dealed)
+		return hand_winner(self.players_left, self.board_cards, self.cards_dealed)
 
 	def play_directly(self):
 		self.dealing_cards()
@@ -71,10 +87,33 @@ class Round():
 		print("Step : " + self.step)
 		print("Players Left" + str([x.pseudo for x in self.players_left]))
 		print("Players chips : " + str({x.pseudo: x.chips for x in self.players_left}))
-		print("Board cards " + str(self.board_cards))
+		print("Board cards :" )
+		show_deck(self.board_cards)
 		print("Pot : " + str(self.pot))
 		print("Players bets : " + str({key.pseudo: value for key, value in self.players_bets.items()}))
 		print('_____________________________________________________________________')
+
+
+	def get_next_step(self):
+		if len(self.players_left) == 1:
+			print("We've got a winner !")
+			print(self.players_left[0].pseudo + ' has won this hand ant take the pot : ' + str(self.pot))
+			self.end_round()
+		elif self.step == 'river':
+			winners = self.get_round_winner()
+			winners = ' and '.join([x.pseudo for x in winners])
+			print("We've got " + str(len(winners)) + " winner(s) : " + winners)
+			if len(self.players_left) == 1:
+				print('The winner take the pot : ' + str(self.pot))
+			else:
+				print('The winners share the pot : ' + str(self.pot))
+			self.end_round()
+		else:
+			print("The players left are : " + str(' and '.join([x.pseudo for x in self.players_left])))
+
+	def end_round(self):
+		pass
+
 
 	def player_bet(self, player, max_bet, cnt):
 		self.show_info()
@@ -129,30 +168,34 @@ class Round():
 		if self.step == "pre-flop":
 			play_order = self.ordered_players
 			if len(self.ordered_players) > 3:
-				play_order = self.ordered_players[3:]+self.ordered_players[:3]
+				play_order = self.ordered_players[3:] + self.ordered_players[:3]
 		else:
-			play_order = self.ordered_players[1:]+self.ordered_players[0]
-		print('icicicicicici')
+			play_order = self.ordered_players[1:] + [self.ordered_players[0]]
 		print([x.pseudo for x in play_order])
 
 		max_bet = max(self.players_bets.values())
 		if type == 'manual':
 			betting_status = 'in progress'
 			cnt = 1
-			while betting_status == 'in progress':
+			while (betting_status == 'in progress'):
 				play_order = [x for x in play_order if x in self.players_left]
 				for player in play_order:
 					max_bet = max(self.players_bets.values())
 					self.player_bet(player, max_bet, cnt)
-					best_players_left = {key: value for key, value in self.players_bets.items() if key in self.players_left}
-					if (len(set(best_players_left.values())) == 1) and (cnt > 1):
+					bet_players_left = {key: value for key, value in self.players_bets.items() if key in self.players_left}
+					if (len(set(bet_players_left.values())) == 1) and (cnt > 1):
+						betting_status = 'over'
+						break
+					if len(self.players_left) == 1:
 						betting_status = 'over'
 						break
 				if cnt == 3:
 					betting_status = 'over'
-				if len(set(best_players_left.values())) == 1:
+				if len(set(bet_players_left.values())) == 1:
 					betting_status = 'over'
 				cnt += 1
+		self.players_bets = {key: 0 for key, _ in self.players_bets.items() if key in self.players_left}
+
 
 
 
