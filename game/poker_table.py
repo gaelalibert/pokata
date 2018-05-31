@@ -59,6 +59,7 @@ class Table(object):
 		print("Players : ", [x.pseudo for x in self.players])
 		print("Spots names : ", self.spot_name)
 		print("Dealer is the seat : ", self.dealer)
+		#TODO : show chips
 
 
 	def leave(self, spot):

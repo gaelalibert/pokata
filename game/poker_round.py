@@ -15,7 +15,7 @@ class Round():
 		self.players_left = ordered_players(table)
 		self.players_bets = {x: 0 for x in ordered_players(table)}
 		self.players_allin = {x: False for x in ordered_players(table)}
-		#self.bets =
+		self.game_on_status = True
 		#self.cards = 
 
 	def get_blinds(self):
@@ -30,6 +30,14 @@ class Round():
 	def dealing_cards(self):
 		# We deal 2 cards per players RANDOMLY
 		self.deck, self.cards_dealed = dealing(self.players_left, self.deck)
+
+	def show_cards_dealed(self):
+		output = []
+		for i in self.players_left:
+			player_cards = [x[1] for x in self.cards_dealed if x[0] == i]
+			player_output = {'player': i.pseudo, 'card1': player_cards[0].show(), 'card2': player_cards[1].show()}
+			output.append(player_output)
+			print(player_output)
 
 	def preflop_bets(self, type='manual'):
 		self.betting(type)
@@ -75,13 +83,6 @@ class Round():
 	def get_round_winner(self):
 		return hand_winner(self.players_left, self.board_cards, self.cards_dealed)
 
-	def play_directly(self):
-		self.dealing_cards()
-		self.play_flop()
-		self.play_turn()
-		self.play_river()
-		self.get_round_winner()
-
 	def show_info(self):
 		print('_____________________________________________________________________')
 		print("Step : " + self.step)
@@ -97,8 +98,8 @@ class Round():
 	def get_next_step(self):
 		if len(self.players_left) == 1:
 			print("We've got a winner !")
-			print(self.players_left[0].pseudo + ' has won this hand ant take the pot : ' + str(self.pot))
-			self.end_round()
+			print(self.players_left[0].pseudo + ' has won this hand and take the pot : ' + str(self.pot))
+			self.end_round(self.players_left, self.pot)
 		elif self.step == 'river':
 			winners = self.get_round_winner()
 			winners = ' and '.join([x.pseudo for x in winners])
@@ -107,12 +108,15 @@ class Round():
 				print('The winner take the pot : ' + str(self.pot))
 			else:
 				print('The winners share the pot : ' + str(self.pot))
-			self.end_round()
+			self.end_round(winners, self.pot)
 		else:
 			print("The players left are : " + str(' and '.join([x.pseudo for x in self.players_left])))
 
-	def end_round(self):
-		pass
+	def end_round(self, winners, pot):
+		self.game_on_status = False
+		nb_winner = len(winners)
+		for player in winners:
+			player.chips += pot / nb_winner
 
 
 	def player_bet(self, player, max_bet, cnt):
@@ -196,6 +200,27 @@ class Round():
 				cnt += 1
 		self.players_bets = {key: 0 for key, _ in self.players_bets.items() if key in self.players_left}
 
+
+
+
+	def play_round(self, type='manual', verbose=True):
+		self.get_blinds()
+		self.dealing_cards()
+		if verbose == True:
+			self.show_cards_dealed()
+		self.preflop_bets(type)
+		if self.game_on_status == True:
+			self.play_flop()
+		if self.game_on_status == True:
+			self.flop_bets(type)
+		if self.game_on_status == True:
+			self.play_turn()
+		if self.game_on_status == True:
+			self.turn_bets(type)
+		if self.game_on_status == True:
+			self.play_river()
+		if self.game_on_status == True:
+			self.river_bets(type)
 
 
 

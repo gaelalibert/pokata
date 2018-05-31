@@ -44,15 +44,6 @@ def chosen_dealing(table : Table, deck : list, chosen_cards : list):
 	deck = set(deck) - set(cards_list)
 	return(deck, cards_dealed)
 
-
-def show_cards_dealed(players_left : list, cards_dealed : list):
-	output = []
-	for i in players_left:
-		player_cards = [x[1] for x in cards_dealed if x[0] == i]
-		player_output = {'player': i.pseudo, 'card1': player_cards[0].show(), 'card2': player_cards[1].show()}
-		output.append(player_output)
-	return(output)
-
 def dealing_board(deck : list):
 	board_cards = rd.sample(deck, 5)
 	deck = set(deck) - set(board_cards)
